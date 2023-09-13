@@ -1,39 +1,70 @@
 const UserModel = require('../models/user');
 
+// Validações
+
+async function verifyIfUserExists(id) {
+    try {
+        console.log(id);
+        if (!id) throw new Error('Id não informado!');
+
+
+        const user = await UserModel.findById(id);
+
+        if (!user) throw new Error('Usuário não encontrado!');
+
+        return !!user;
+    } catch (error) {
+        throw new Error(error.message);
+    }
+}
+
+
+// Funções do controller
 const userController = {
-    async createUser(req, res) {
-        const { _id, name, username, email, photo } = req.body;
+    // Função para criar um novo usuário
+    async createUser(userDTO) {
         try {
-            const user = await UserModel.create({ _id, name, username, email, photo });
-            res.status(201).json(user);
+            const user = UserModel.findById(userDTO._id);
+            return await UserModel.create(userDTO);
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            throw new Error(error.message);
         }
     },
 
-    async getUser(req, res) {
-        const { id } = req.params;
+    // Função para buscar um usuário pelo id
+    async getUser(id) {
         try {
+
+            if (!id) throw new Error('Id não informado!');
             const user = await UserModel.findById(id);
-            res.status(200).json(user);
+
+            if (!user) {
+                throw new Error('Usuário não encontrado!');
+            }
+
+            return user;
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            throw new Error(error.message);
         }
     },
 
-    async getAllUsers(req, res) {
+    // Função para buscar todos os usuários
+    async getAllUsers(userDTO) {
         try {
             const users = await UserModel.find();
-            res.status(200).json(users);
+            if (users) {
+                return users;
+            }
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            throw new Error(error.message);
         }
     },
 
-    async updateUser(req, res) {
-        const { id } = req.params;
-        const { name, username, email, photo } = req.body;
+    // Função para atualizar um usuário
+    async updateUser(userDTO) {
+        const { id, name, username, email, photo } = userDTO;
         try {
+            await verifyIfUserExists(id);
             const user = await UserModel.findById(id);
             if (user) {
                 user.name = name;
@@ -41,23 +72,28 @@ const userController = {
                 user.email = email;
                 user.photo = photo;
                 await user.save();
-                res.status(200).json(user);
+                return user;
             }
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            throw new Error(error.message);
         }
     },
 
-    async deleteUser(req, res) {
-        const { id } = req.params;
+    // Função para deletar um usuário
+    async deleteUser(id) {
         try {
+            if (await verifyIfUserExists(id)) {
+                throw new Error('Usuário não encontrado!');
+            }
+
             const user = await UserModel.findById(id);
             if (user) {
                 await UserModel.findByIdAndDelete(id);
-                res.status(200).json({ message: 'Usuário deletado com sucesso!' });
+                return user;
             }
+
         } catch (error) {
-            res.status(500).json({ message: error.message });
+            throw new Error(error.message);
         }
     }
 }
