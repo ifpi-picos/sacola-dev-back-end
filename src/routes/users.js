@@ -99,7 +99,7 @@ router.post('/users/:id/steam', verifyToken, async (req, res) => {
     const { id } = req.params;
     const { steamId } = req.body;
     try {
-        const user = await userController.addSteamId(id, steamId);
+        const user = await steamController.addSteamId(id, steamId);
         res.status(200).json({ message: 'SteamID adicionado com sucesso!', user: user });
     } catch (error) {
         res.status(500).json({ message: error.message });
