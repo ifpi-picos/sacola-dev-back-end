@@ -1,9 +1,6 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 
-const {gameSchema} = require('./game');
-
-
 
 const userSchema = new Schema({
     _id: {
@@ -26,13 +23,29 @@ const userSchema = new Schema({
         type: String,
         require: false,
     },
-    friends: {
-        type: [String],
-        require: false,
+    userFriends: {
+        friends_total: {
+            type: Number,
+            default: 0,
+        },
+        friends: [{
+            type: String,
+            ref: 'User',
+        }]
     },
-    games: {
-        type: [gameSchema],
-        require: false,
+    userGames: {
+        games_total: {
+            type: Number,
+            default: 0,
+        },
+        games: [{
+            type: Object,
+        }]
+    },
+    storeKeys: {
+        steam: {
+            type: String,
+        }
     }
 }, {timestamps: true});
 

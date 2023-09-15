@@ -1,22 +1,5 @@
 const UserModel = require('../models/user');
-
-// Validações
-
-async function verifyIfUserExists(id) {
-    try {
-        console.log(id);
-        if (!id) throw new Error('Id não informado!');
-
-
-        const user = await UserModel.findById(id);
-
-        if (!user) throw new Error('Usuário não encontrado!');
-
-        return !!user;
-    } catch (error) {
-        throw new Error(error.message);
-    }
-}
+const { verifyIfUserExists } = require('./verifications');
 
 
 // Funções do controller
@@ -95,7 +78,7 @@ const userController = {
         } catch (error) {
             throw new Error(error.message);
         }
-    }
+    },
 }
 
 module.exports = userController;

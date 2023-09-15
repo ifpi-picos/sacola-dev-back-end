@@ -1,6 +1,10 @@
 const jwt = require('jsonwebtoken');
 const router = require('express').Router();
+const steam = require('../services/steamApi/steam');
+const steamController = require('../controllers/steamController');
 const userController = require('../controllers/userController');
+
+
 
 // Verify token
 const verifyToken = (req, res, next) => {
@@ -32,8 +36,15 @@ router.post('/users', verifyToken, async (req, res) => {
         if (!_id || !name || !username || !email) {
             throw new Error('Campos inválidos!');
         }
-        const user = await userController.createUser({ _id, name, username, email, photo });
-        res.status(201).json({ message: 'Usuário criado com sucesso!' });
+        const user = await userController.createUser(
+            {
+                _id,
+                name,
+                username,
+                email,
+                photo,
+            });
+        res.status(201).json({ message: 'Usuário criado com sucesso!' , user: user});
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -82,5 +93,33 @@ router.delete('/users/:id', verifyToken, async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 });
+
+// Rota para adicionar o steamID do usuário
+router.post('/users/:id/steam', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    const { steamId } = req.body;
+    try {
+        const user = await userController.addSteamId(id, steamId);
+        res.status(200).json({ message: 'SteamID adicionado com sucesso!', user: user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
+// Add steam games to user
+router.post('/users/:id/games', verifyToken, async (req, res) => {
+    const { id } = req.params;
+    try {
+        const userSteamId = await steamController.getSteamId(id);
+
+        const userGames = await steam.getGamesOwned(userSteamId);
+
+        const user = await steamController.addSteamGames(id, userGames);
+        res.status(200).json({ message: 'Jogos adicionados com sucesso!', user: user });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
+
 
 module.exports = router;
