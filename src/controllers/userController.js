@@ -1,5 +1,5 @@
 const UserModel = require('../models/user');
-const { verifyIfUserExists } = require('./verifications');
+const {verifyIfUserExists} = require('./verifications');
 
 
 // Funções do controller
@@ -8,6 +8,9 @@ const userController = {
     async createUser(userDTO) {
         try {
             const user = UserModel.findById(userDTO._id);
+            if (user) {
+                throw new Error('Usuário já cadastrado!');
+            }
             return await UserModel.create(userDTO);
         } catch (error) {
             throw new Error(error.message);
@@ -45,7 +48,7 @@ const userController = {
 
     // Função para atualizar um usuário
     async updateUser(userDTO) {
-        const { id, name, username, email, photo } = userDTO;
+        const {id, name, username, email, photo} = userDTO;
         try {
             await verifyIfUserExists(id);
             const user = await UserModel.findById(id);

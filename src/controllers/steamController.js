@@ -1,5 +1,6 @@
 const UserModel = require("../models/user");
-const { verifyIfUserExists } = require('./verifications');
+const {verifyIfUserExists} = require('./verifications');
+const {getSteamGameById} = require("../services/steamApi/steam");
 
 const steamController = {
     //Função para adicionar o steamId do usuário
@@ -41,6 +42,14 @@ const steamController = {
                 await user.save();
                 return user;
             }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+    async getSteamGameInfo(steamGameId) {
+        try {
+            return await getSteamGameById(steamGameId);
         } catch (error) {
             throw new Error(error.message);
         }
