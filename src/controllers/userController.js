@@ -7,11 +7,12 @@ const userController = {
     // Função para criar um novo usuário
     async createUser(userDTO) {
         try {
-            const user = UserModel.findById(userDTO._id);
-            if (user) {
+            const user = await UserModel.findById(userDTO._id);
+            if (!user) {
+                return await UserModel.create(userDTO);
+            } else {
                 throw new Error('Usuário já cadastrado!');
             }
-            return await UserModel.create(userDTO);
         } catch (error) {
             throw new Error(error.message);
         }

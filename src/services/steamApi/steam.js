@@ -1,4 +1,3 @@
-//59E03C9C7E314A2ED499E82FEB427EBD
 const SteamAPIKey = process.env.STEAM_API;
 
 const steam = {
