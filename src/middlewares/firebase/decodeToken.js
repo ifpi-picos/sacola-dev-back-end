@@ -1,6 +1,9 @@
 const admin = require('./firebase-config');
 class middleware {
     async decodeToken(req, res, next) {
+        if (!req.headers.authorization) {
+            return res.status(401).json({ message: 'Unauthorized' });
+        }
         const token = req.headers.authorization.split(' ')[1];
         try {
             const decodeValue = await admin.auth().verifyIdToken(token);

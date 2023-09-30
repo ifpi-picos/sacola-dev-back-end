@@ -22,8 +22,7 @@ app.use(middlewareFb.decodeToken);
 app.use('/api', routes);
 
 app.get('/', (req, res) => {
-    console.log(req.uid);
-    res.send('<h1>API Online</h1>');
+    res.send('<h1 style="text-align: center">Api Online!!!</h1>');
 });
 
 app.listen(port, () => {
