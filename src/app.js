@@ -28,6 +28,6 @@ app.get('/', (req, res) => {
     res.send('<h1 style="text-align: center">Api Online!!!</h1>');
 });
 
-app.listen(port, () => {
+app.listen(port, "0.0.0.0", () => {
     console.log(`Servidor rodando na porta ${port}`);
 });
