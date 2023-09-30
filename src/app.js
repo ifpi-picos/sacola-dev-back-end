@@ -6,6 +6,8 @@ const cors = require('cors');
 const connectDB = require('./db/conn');
 const compression = require('compression');
 const middlewareFb = require('./middlewares/firebase/decodeToken.js');
+const swaggerUi = require("swagger-ui-express");
+const swaggerDocs = require('./swagger.json')
 
 
 const port = 5000;
@@ -18,7 +20,8 @@ app.use(express.json());
 
 connectDB();
 
-app.use(middlewareFb.decodeToken);
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+// app.use(middlewareFb.decodeToken);
 app.use('/api', routes);
 
 app.get('/', (req, res) => {

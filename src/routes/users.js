@@ -23,6 +23,9 @@ router.post('/users', verifyToken, async (req, res) => {
             });
         res.status(201).json({message: 'Usuário criado com sucesso!', user: user});
     } catch (error) {
+        if (error.message === 'Usuário já cadastrado!') {
+            res.status(409).json({message: error.message});
+        }
         res.status(500).json({message: error.message});
     }
 });
@@ -34,6 +37,9 @@ router.get('/user', verifyToken, async (req, res) => {
         const user = await userController.getUser(uid);
         res.status(200).json({message: 'Usuário encontrado com sucesso!', user: user});
     } catch (error) {
+        if (error.message === 'Usuário não encontrado!') {
+            res.status(404).json({message: error.message});
+        }
         res.status(500).json({message: error.message});
     }
 });
