@@ -8,7 +8,7 @@ const verifyToken = require('../middlewares/verifyToken');
 // Create a new user
 router.post('/users', verifyToken, async (req, res) => {
     const {_id, name, username, email, photo} = req.body;
-    console.log(req.body)
+    console.log(req.uid)
     try {
         if (!_id || !name || !username || !email) {
             throw new Error('Campos inválidos!');
@@ -28,10 +28,10 @@ router.post('/users', verifyToken, async (req, res) => {
 });
 
 // Get a user by id
-router.get('/users/:id', verifyToken, async (req, res) => {
-    const {id} = req.params;
+router.get('/user', verifyToken, async (req, res) => {
+    const uid = req.uid;
     try {
-        const user = await userController.getUser(id);
+        const user = await userController.getUser(uid);
         res.status(200).json({message: 'Usuário encontrado com sucesso!', user: user});
     } catch (error) {
         res.status(500).json({message: error.message});

@@ -21,7 +21,6 @@ const userController = {
     // Função para buscar um usuário pelo id
     async getUser(id) {
         try {
-
             if (!id) throw new Error('Id não informado!');
             const user = await UserModel.findById(id);
 
