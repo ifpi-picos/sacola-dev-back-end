@@ -23,7 +23,7 @@ app.use('/api', routes);
 
 app.get('/', (req, res) => {
     console.log(req.uid);
-    res.send('Hello World!');
+    res.send('<h1>API Online</h1>');
 });
 
 app.listen(port, () => {
