@@ -30,6 +30,16 @@ router.post('/users', verifyToken, async (req, res) => {
     }
 });
 
+// Get all users
+router.get('/users', verifyToken, async (req, res) => {
+    try {
+        const users = await userController.getAllUsers();
+        res.status(200).json({message: 'Usuários encontrados com sucesso!', users: users});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
 // Get a user by id
 router.get('/user', verifyToken, async (req, res) => {
     const uid = req.uid;
@@ -44,30 +54,23 @@ router.get('/user', verifyToken, async (req, res) => {
     }
 });
 
-// Get all users
-router.get('/users', verifyToken, async (req, res) => {
-    try {
-        const users = await userController.getAllUsers();
-        res.status(200).json({message: 'Usuários encontrados com sucesso!', users: users});
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-});
-
 // Update a user by id
-router.put('/users/:id', verifyToken, async (req, res) => {
+router.put('/user', verifyToken, async (req, res) => {
     const {id} = req.params;
     const {name, username, email, photo} = req.body;
     try {
         const user = await userController.updateUser({id, name, username, email, photo});
         res.status(200).json({message: 'Usuário atualizado com sucesso!', user: user});
     } catch (error) {
+        if (error.message === 'Usuário não encontrado!') {
+            res.status(404).json({message: error.message});
+        }
         res.status(500).json({message: error.message});
     }
 });
 
 // Delete a user by id
-router.delete('/users/:id', verifyToken, async (req, res) => {
+router.delete('/user', verifyToken, async (req, res) => {
     const {id} = req.params;
     try {
         const user = await userController.deleteUser(id);
