@@ -22,7 +22,7 @@
     }
   ],
   "paths": {
-    "/api/users": {
+    "/api/v1/users": {
       "post": {
         "tags": [
           "Users"
@@ -161,7 +161,7 @@
         "operationId": "getUsers"
       }
     },
-    "/api/user": {
+    "/api/v1/user": {
       "get": {
         "tags": [
           "Users"

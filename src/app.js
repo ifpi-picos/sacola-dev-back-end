@@ -28,7 +28,7 @@ app.get('/', (req, res) => {
 
 app.use(middlewareFb.decodeToken);
 
-app.use('/api', routes);
+app.use('/api/v1', routes);
 
 app.listen(port, "0.0.0.0", () => {
     console.log(`Servidor rodando na porta ${port}`);
