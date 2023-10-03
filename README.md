@@ -1,6 +1,5 @@
 # projeto-web-full-stack-sacola-development-back-end
 
-
 GameMate
 O GameMate é um sistema tracker para seus jogos
 
