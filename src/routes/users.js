@@ -50,8 +50,9 @@ router.get('/user', verifyToken, async (req, res) => {
     } catch (error) {
         if (error.message === 'Usuário não encontrado!') {
             res.status(404).json({message: error.message});
+        } else{
+            res.status(500).json({message: error.message});
         }
-        res.status(500).json({message: error.message});
     }
 });
 
@@ -65,8 +66,9 @@ router.put('/user', verifyToken, async (req, res) => {
     } catch (error) {
         if (error.message === 'Usuário não encontrado!') {
             res.status(404).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
         }
-        res.status(500).json({message: error.message});
     }
 });
 
