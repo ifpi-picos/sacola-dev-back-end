@@ -8,7 +8,7 @@ const verifyToken = require('../middlewares/verifyToken');
 // Create a new user
 router.post('/users', verifyToken, async (req, res) => {
     const {_id, name, username, email, photo} = req.body;
-    console.log(req.uid)
+
     try {
         if (!_id || !name || !username || !email) {
             throw new Error('Campos inválidos!');
@@ -25,8 +25,9 @@ router.post('/users', verifyToken, async (req, res) => {
     } catch (error) {
         if (error.message === 'Usuário já cadastrado!') {
             res.status(409).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
         }
-        res.status(500).json({message: error.message});
     }
 });
 
