@@ -2,7 +2,7 @@ const mongoose = require("mongoose")
 
 async function main() {
 
-    const mongoPassword = "aqPfieucDnRKzWui"
+    const mongoPassword = process.env.MONGO_PASSWORD
 
     try {
         mongoose.set("strictQuery", true)

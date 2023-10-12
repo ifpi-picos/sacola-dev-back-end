@@ -23,7 +23,8 @@ connectDB();
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.get('/', (req, res) => {
-    res.send('<h1 style="text-align: center">Api Online!!!</h1> <h2 style="text-align: center">Acesse a documentação em /api-docs</h2>');
+    res.send('<h1 style="text-align: center">Api Online!!!</h1> <h2 style="text-align: center">Acesse a documentação' +
+        ' em <a href="/api-docs">/Api-docs</a> </h2>');
 });
 
 app.use(middlewareFb.decodeToken);

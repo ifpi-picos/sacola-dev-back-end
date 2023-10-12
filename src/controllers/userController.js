@@ -82,6 +82,55 @@ const userController = {
             throw new Error(error.message);
         }
     },
+
+    // Função para adicionar um jogo ao usuário
+    async addGameToUser(id, game) {
+        try {
+            if (await verifyIfUserExists(id) === false) {
+                throw new Error('Usuário não encontrado!');
+            }
+
+            const user = await UserModel.findById(id);
+            if (user) {
+                user.userGames.games_total += 1;
+
+                if (user.userGames.games.length === 0) {
+                    user.userGames.games = {LocalGameData: {game_count: 1, game_List: [game]}};
+                    await user.save();
+                    return user;
+                }
+
+                const LocalGameData = {
+                    game_count: user.userGames.games[0].LocalGameData.game_count + 1,
+                    game_List: [...user.userGames.games[0].LocalGameData.game_List, game]
+                }
+
+                user.userGames.games = {LocalGameData};
+
+                await user.save();
+                return user;
+            }
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+    async getLocalUserGames(id) {
+        try {
+            if (await verifyIfUserExists(id) === false) {
+                throw new Error('Usuário não encontrado!');
+            }
+
+            const user = await UserModel.findById(id);
+            if (user) {
+                return user.userGames.games[0];
+            }
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    }
 }
 
 module.exports = userController;

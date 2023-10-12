@@ -83,8 +83,20 @@ router.delete('/user', verifyToken, async (req, res) => {
     }
 });
 
+// Rota para adicionar jogo ao usuário
+router.put('/user/games', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    const {game} = req.body;
+    try {
+        const user = await userController.addGameToUser(uid, game);
+        res.status(200).json({message: 'Jogo adicionado com sucesso!', user: user});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
 // Rota para adicionar o steamID do usuário
-router.post('/users/:id/steam', verifyToken, async (req, res) => {
+router.post('/users/steam', verifyToken, async (req, res) => {
     const {id} = req.params;
     const {steamId} = req.body;
     try {
