@@ -17,7 +17,7 @@
       "description": "Servidor de desenvolvimento"
     },
     {
-      "url": "https://projeto-web-full-stack-sacola-development-back-end.vercel.app/",
+      "url": "https://sacola-dev-back-end-production.up.railway.app/api/v1/",
       "description": "Servidor de produção"
     }
   ],
