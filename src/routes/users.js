@@ -95,6 +95,17 @@ router.put('/user/games', verifyToken, async (req, res) => {
     }
 });
 
+router.delete('/user/games', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    const {game} = req.body;
+    try {
+        const user = await userController.deleteLocalGameFromUser(uid, game);
+        res.status(200).json({message: 'Jogo deletado com sucesso!', user: user});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
 // Rota para adicionar o steamID do usuário
 router.post('/users/steam', verifyToken, async (req, res) => {
     const {id} = req.params;

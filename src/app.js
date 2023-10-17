@@ -9,8 +9,6 @@ const middlewareFb = require('./middlewares/firebase/decodeToken.js');
 const swaggerUi = require("swagger-ui-express");
 const swaggerDocs = require('./swagger.json')
 
-
-const port = process.env.PORT || 5000;
 const app = express();
 
 app.use(cors());
@@ -31,11 +29,8 @@ app.get('/api/v1', (req, res) => {
     res.status(200).send('Is working!');
 });
 
-
 app.use(middlewareFb.decodeToken);
 
 app.use('/api/v1', routes);
 
-app.listen(port, "0.0.0.0", () => {
-    console.log(`Servidor rodando na porta ${port}`);
-});
+module.exports = app;

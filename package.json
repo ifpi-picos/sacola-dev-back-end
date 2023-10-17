@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \\\"Error: no Client_Secret_Generator specified\\\" && exit 1",
-    "start": "nodemon ./src/app.js",
+    "start": "nodemon ./src/server.js",
     "dev": "nodemon ./src/app.js"
   },
   "repository": {
