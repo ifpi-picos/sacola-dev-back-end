@@ -16,7 +16,7 @@ app.use(helmet());
 app.use(compression());
 app.use(express.json());
 
-connectDB();
+connectDB().then(r => console.log('Conectado com o banco!')).catch(e => console.log(`Erro: ${e}`));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 

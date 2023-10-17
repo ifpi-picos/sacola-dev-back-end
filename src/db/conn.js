@@ -15,7 +15,6 @@ async function main() {
         //     `mongodb://conde:montepicos@localhost:27017/tests?authSource=admin`
         // )
 
-        console.log("Conectado com o banco!")
     } catch (error) {
         console.log(`Erro: ${error}`)
     }
