@@ -27,6 +27,11 @@ app.get('/', (req, res) => {
         ' em <a href="/api-docs">/Api-docs</a> </h2>');
 });
 
+app.get('/api/v1', (req, res) => {
+    res.status(200).send('Is working!');
+});
+
+
 app.use(middlewareFb.decodeToken);
 
 app.use('/api/v1', routes);
