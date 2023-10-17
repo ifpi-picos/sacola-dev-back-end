@@ -94,7 +94,7 @@ router.put('/user/games', verifyToken, async (req, res) => {
         res.status(500).json({message: error.message});
     }
 });
-
+// Rota para deletar jogo do usuário
 router.delete('/user/games', verifyToken, async (req, res) => {
     const uid = req.uid;
     const {game} = req.body;
