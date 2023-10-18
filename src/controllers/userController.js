@@ -96,11 +96,14 @@ const userController = {
                 //verifica se o jogo já está na lista e se estiver não adiciona
                 if (user.userGames.games.length > 0) {
                     const gameList = user.userGames.games[0].LocalGameData.game_List;
-                    const gameExists = gameList.find((gameItem) => gameItem.appid === game.appid);
+                    const gameExists = gameList.includes(game);
                     if (gameExists) {
+                        console.log(gameExists, game);
                         throw new Error('Jogo já adicionado!');
                     }
+                    console.log(gameExists, game);
                 }
+
 
                 user.userGames.games_total += 1;
 
@@ -134,7 +137,8 @@ const userController = {
 
             const user = await UserModel.findById(id);
             if (user) {
-                return user.userGames.games[0];
+                console.log(user.userGames.games[0].LocalGameData)
+                return user.userGames.games[0].LocalGameData;
             }
 
         } catch (error) {
@@ -156,12 +160,18 @@ const userController = {
 
                 if (user.userGames.games[0].LocalGameData.game_List.length === 0) {
                     throw new Error('Usuário não possui jogos!');
+                } else if (!user.userGames.games[0].LocalGameData.game_List.includes(game)) {
+                    throw new Error('Jogo não encontrado!');
                 }
+
+
 
                 const LocalGameData = {
                     game_count: user.userGames.games[0].LocalGameData.game_count - 1,
-                    game_List: user.userGames.games[0].LocalGameData.game_List.filter((gameItem) => gameItem.appid !== game.appid)
+                    game_List: user.userGames.games[0].LocalGameData.game_List.filter((gameItem) => gameItem !== game)
                 }
+
+
                 user.userGames.games_total -= 1;
                 user.userGames.games = {LocalGameData};
 

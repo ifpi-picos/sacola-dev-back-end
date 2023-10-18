@@ -89,7 +89,7 @@ router.put('/user/games', verifyToken, async (req, res) => {
     const {game} = req.body;
     try {
         const user = await userController.addGameToUser(uid, game);
-        console.log(user);
+
         res.status(200).json({message: 'Jogo adicionado com sucesso!', user: user});
     } catch (error) {
         console.log(error.message)
@@ -102,10 +102,21 @@ router.delete('/user/games', verifyToken, async (req, res) => {
     const {game} = req.body;
     try {
         const user = await userController.deleteLocalGameFromUser(uid, game);
-        console.log(user)
+
         res.status(200).json({message: 'Jogo deletado com sucesso!', user: user});
     } catch (error) {
         console.log(error.message)
+        res.status(500).json({message: error.message});
+    }
+});
+
+//Rota para pegar os jogos do usuário
+router.get('/user/games', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    try {
+        const response = await userController.getLocalUserGames(uid);
+        res.status(200).json({message: 'Jogos encontrados com sucesso!', games: response});
+    } catch (error) {
         res.status(500).json({message: error.message});
     }
 });
