@@ -48,10 +48,16 @@ const userController = {
 
     // Função para atualizar um usuário
     async updateUser(userDTO) {
-        const {id, name, username, email, photo} = userDTO;
+
+        if (!userDTO.name && !userDTO.username) throw new Error('Dados não informados!');
+
+        const {uid, name, username, email, photo} = userDTO;
+
         try {
-            await verifyIfUserExists(id);
-            const user = await UserModel.findById(id);
+            if (!await verifyIfUserExists(uid)) {
+                throw new Error('Usuário não encontrado!');
+            }
+            const user = await UserModel.findById(uid);
             if (user) {
                 user.name = name;
                 user.username = username;
@@ -68,7 +74,7 @@ const userController = {
     // Função para deletar um usuário
     async deleteUser(id) {
         try {
-            if (await verifyIfUserExists(id)) {
+            if (!await verifyIfUserExists(id)) {
                 throw new Error('Usuário não encontrado!');
             }
 

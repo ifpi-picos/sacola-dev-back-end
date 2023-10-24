@@ -15,7 +15,7 @@ async function main() {
             console.log("Conectando com o banco hospedado na nuvem...")
         } else {
             await mongoose.connect(
-                `mongodb://conde:${mongoLocalPassword}@localhost:27017/tests?authSource=admin`
+                `mongodb://conde:${mongoLocalPassword}@localhost:27017/appTest?authSource=admin`
             )
             console.log("Conectando com o banco local...")
         }

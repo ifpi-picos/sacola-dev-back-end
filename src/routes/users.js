@@ -6,7 +6,7 @@ const verifyToken = require('../middlewares/verifyToken');
 
 
 // Create a new user
-router.post('/users', verifyToken, async (req, res) => {
+router.post('/user', verifyToken, async (req, res) => {
     const {_id, name, username, email, photo} = req.body;
 
     try {
@@ -21,10 +21,14 @@ router.post('/users', verifyToken, async (req, res) => {
                 email,
                 photo,
             });
-        res.status(201).json({message: 'Usuário criado com sucesso!', user: user});
+        console.log({message: 'Usuario criado com sucesso!', user: user})
+        res.status(201).json({message: 'Usuário criado com sucesso!', user: {name, username}});
     } catch (error) {
+        console.log(error.message)
         if (error.message === 'Usuário já cadastrado!') {
             res.status(409).json({message: error.message});
+        } else if (error.message === 'Campos inválidos!') {
+            res.status(400).json({message: error.message});
         } else {
             res.status(500).json({message: error.message});
         }
@@ -58,14 +62,20 @@ router.get('/user', verifyToken, async (req, res) => {
 
 // Update a user by id
 router.put('/user', verifyToken, async (req, res) => {
-    const {id} = req.params;
+    const uid = req.uid;
     const {name, username, email, photo} = req.body;
     try {
-        const user = await userController.updateUser({id, name, username, email, photo});
-        res.status(200).json({message: 'Usuário atualizado com sucesso!', user: user});
+        const user = await userController.updateUser({uid, name, username, email, photo});
+        console.log({message: 'Usuario atualizado com sucesso!', user: user})
+        res.status(200).json({message: 'Usuário atualizado com sucesso!', user: {name, username, email}});
     } catch (error) {
+        console.log(error.message)
         if (error.message === 'Usuário não encontrado!') {
             res.status(404).json({message: error.message});
+        } else if (error.message === 'Id não informado!') {
+            res.status(400).json({message: error.message});
+        } else if (error.message === 'Dados não informados!') {
+            res.status(400).json({message: error.message});
         } else {
             res.status(500).json({message: error.message});
         }
@@ -74,14 +84,21 @@ router.put('/user', verifyToken, async (req, res) => {
 
 // Delete a user by id
 router.delete('/user', verifyToken, async (req, res) => {
-    const {id} = req.params;
+    const uid = req.uid;
     try {
-        const user = await userController.deleteUser(id);
-        res.status(200).json({message: 'Usuário deletado com sucesso!', user: user});
+        const user = await userController.deleteUser(uid);
+        console.log({message: 'Usuario deletado com sucesso!', user: user})
+        res.status(204).json({message: 'Usuário deletado com sucesso!'});
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({message: error.message});
     }
 });
+
+
+
+
+
 
 // Rota para adicionar jogo ao usuário
 router.put('/user/games', verifyToken, async (req, res) => {
@@ -89,7 +106,6 @@ router.put('/user/games', verifyToken, async (req, res) => {
     const {game} = req.body;
     try {
         const user = await userController.addGameToUser(uid, game);
-
         res.status(200).json({message: 'Jogo adicionado com sucesso!', user: user});
     } catch (error) {
         console.log(error.message)
