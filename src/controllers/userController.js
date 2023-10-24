@@ -92,6 +92,11 @@ const userController = {
     // Função para adicionar um jogo ao usuário
     async addGameToUser(id, game) {
         try {
+
+            if (game === undefined) {
+                throw new Error('Jogo não informado!');
+            }
+
             if (await verifyIfUserExists(id) === false) {
                 throw new Error('Usuário não encontrado!');
             }
@@ -154,6 +159,11 @@ const userController = {
 
     async deleteLocalGameFromUser(id, game) {
         try {
+
+            if (game === undefined) {
+                throw new Error('Jogo não informado!');
+            }
+
             if (await verifyIfUserExists(id) === false) {
                 throw new Error('Usuário não encontrado!');
             }

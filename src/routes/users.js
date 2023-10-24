@@ -91,7 +91,11 @@ router.delete('/user', verifyToken, async (req, res) => {
         res.status(204).json({message: 'Usuário deletado com sucesso!'});
     } catch (error) {
         console.log(error.message)
-        res.status(500).json({message: error.message});
+        if (error.message === 'Usuário não encontrado!') {
+            res.status(404).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
     }
 });
 
@@ -109,7 +113,11 @@ router.put('/user/games', verifyToken, async (req, res) => {
         res.status(200).json({message: 'Jogo adicionado com sucesso!', user: user});
     } catch (error) {
         console.log(error.message)
-        res.status(500).json({message: error.message});
+        if (error.message === 'Jogo não informado!') {
+            res.status(400).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
     }
 });
 // Rota para deletar jogo do usuário
@@ -119,7 +127,7 @@ router.delete('/user/games', verifyToken, async (req, res) => {
     try {
         const user = await userController.deleteLocalGameFromUser(uid, game);
 
-        res.status(200).json({message: 'Jogo deletado com sucesso!', user: user});
+        res.status(204).json({message: 'Jogo deletado com sucesso!'});
     } catch (error) {
         console.log(error.message)
         res.status(500).json({message: error.message});
