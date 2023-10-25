@@ -1,8 +1,9 @@
 const admin = require('./firebase-config');
+
 class middleware {
     async decodeToken(req, res, next) {
         if (!req.headers.authorization) {
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({message: 'Unauthorized'});
         }
         const token = req.headers.authorization.split(' ')[1];
         try {
@@ -16,11 +17,12 @@ class middleware {
                     return next();
                 }
             }
-            return res.status(401).json({ message: 'Unauthorized' });
+            return res.status(401).json({message: 'Unauthorized'});
         } catch (error) {
             console.log('error', error);
-            return res.status(500).json({ message: 'Internal error' });
+            return res.status(500).json({message: 'Internal error'});
         }
     }
 }
+
 module.exports = new middleware();

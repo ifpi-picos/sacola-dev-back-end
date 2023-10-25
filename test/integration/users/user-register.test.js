@@ -34,7 +34,8 @@ describe('Teste de integração para o cadastro de usuário', () => {
                 }
                 done();
             });
-    })});
+    })
+});
 
 describe('Testar o cadastro de usuario caso um campo não sido preenchido pela parte do cliente', () => {
     beforeAll(async () => {
@@ -64,9 +65,8 @@ describe('Testar o cadastro de usuario caso um campo não sido preenchido pela p
                 }
                 done();
             });
-    })});
-
-
+    })
+});
 
 
 describe('Teste de integração para deletar um usuário específico', () => {

@@ -23,9 +23,58 @@
   ],
   "paths": {
     "/api/v1/users": {
-      "post": {
+      "get": {
         "tags": [
           "Users"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Usuários encontrados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "users": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não Autorizado: A autenticação é necessária e falhou ou não foi fornecida.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Busca todos os usuários",
+        "description": "Busca todos os usuários",
+        "operationId": "getUsers"
+      }
+    },
+    "/api/v1/user": {
+      "post": {
+        "tags": [
+          "User"
         ],
         "security": [
           {
@@ -115,56 +164,7 @@
       },
       "get": {
         "tags": [
-          "Users"
-        ],
-        "security": [
-          {
-            "bearerAuth": []
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Usuários encontrados com sucesso",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "users": {
-                      "type": "array",
-                      "items": {
-                        "$ref": "#/components/schemas/User"
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Não Autorizado: A autenticação é necessária e falhou ou não foi fornecida.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "properties": {
-                    "message": {
-                      "type": "string",
-                      "description": "Mensagem de erro"
-                    }
-                  }
-                }
-              }
-            }
-          }
-        },
-        "summary": "Busca todos os usuários",
-        "description": "Busca todos os usuários",
-        "operationId": "getUsers"
-      }
-    },
-    "/api/v1/user": {
-      "get": {
-        "tags": [
-          "Users"
+          "User"
         ],
         "security": [
           {
@@ -208,7 +208,7 @@
       },
       "put": {
         "tags": [
-          "Users"
+          "User"
         ],
         "security": [
           {
@@ -297,7 +297,7 @@
       },
       "delete": {
         "tags": [
-          "Users"
+          "User"
         ],
         "security": [
           {
@@ -379,7 +379,7 @@
     "/api/v1/user/games": {
       "put": {
         "tags": [
-          "Users"
+          "User Games"
         ],
         "security": [
           {
@@ -472,9 +472,52 @@
         "description": "Adiciona um jogo ao usuário",
         "operationId": "addGameToUser"
       },
+      "get": {
+        "tags": [
+          "User Games"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Jogos do usuário encontrados com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "games": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/User"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não Autorizado: A autenticação é necessária e falhou ou não foi fornecida.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": "Mensagem de erro"
+                }
+              }
+            }
+          }
+        },
+        "summary": "Busca os jogos do usuário",
+        "description": "Busca os jogos do usuário",
+        "operationId": "getUserGames"
+      },
       "delete": {
         "tags": [
-          "Users"
+          "User Games"
         ],
         "security": [
           {

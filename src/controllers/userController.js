@@ -148,7 +148,6 @@ const userController = {
 
             const user = await UserModel.findById(id);
             if (user) {
-                console.log(user.userGames.games[0].LocalGameData)
                 return user.userGames.games[0].LocalGameData;
             }
 
@@ -179,7 +178,6 @@ const userController = {
                 } else if (!user.userGames.games[0].LocalGameData.game_List.includes(game)) {
                     throw new Error('Jogo não encontrado!');
                 }
-
 
 
                 const LocalGameData = {

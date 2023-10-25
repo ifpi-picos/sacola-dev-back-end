@@ -54,7 +54,7 @@ router.get('/user', verifyToken, async (req, res) => {
     } catch (error) {
         if (error.message === 'Usuário não encontrado!') {
             res.status(404).json({message: error.message});
-        } else{
+        } else {
             res.status(500).json({message: error.message});
         }
     }
@@ -100,10 +100,6 @@ router.delete('/user', verifyToken, async (req, res) => {
 });
 
 
-
-
-
-
 // Rota para adicionar jogo ao usuário
 router.put('/user/games', verifyToken, async (req, res) => {
     const uid = req.uid;
@@ -139,11 +135,13 @@ router.get('/user/games', verifyToken, async (req, res) => {
     const uid = req.uid;
     try {
         const response = await userController.getLocalUserGames(uid);
+        console.log({message: `Jogos locais do usuario ${uid} foram encontrados com sucesso`, games: response})
         res.status(200).json({message: 'Jogos encontrados com sucesso!', games: response});
     } catch (error) {
         res.status(500).json({message: error.message});
     }
 });
+
 
 // Rota para adicionar o steamID do usuário
 router.post('/users/steam', verifyToken, async (req, res) => {
