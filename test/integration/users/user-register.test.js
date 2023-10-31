@@ -50,7 +50,7 @@ describe('Testar o cadastro de usuario caso um campo não sido preenchido pela p
 
     it('Deve retornar status 400 bad request', (done) => {
         request(host)
-            .post('/api/v1/users')
+            .post('/api/v1/user')
             .set('Authorization', 'Bearer ' + 'r3KqG4388aUeceKldqC3OQJt5wA3')
             .set('Client_Token', process.env.CLIENT_TOKEN)
             .send({
@@ -88,7 +88,7 @@ describe('Teste de integração para deletar um usuário específico', () => {
         };
 
         const response = await request(host)
-            .post('/api/v1/users')
+            .post('/api/v1/user')
             .set('Authorization', 'Bearer ' + 'r3KqG4388aUeceKldqC3OQJt5wA3')
             .set('Client_Token', process.env.CLIENT_TOKEN)
             .send(user);

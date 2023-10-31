@@ -22,7 +22,7 @@ describe('Teste de integração para obter um usuário específico', () => {
         };
 
         const response = await request(host)
-            .post('/api/v1/users')
+            .post('/api/v1/user')
             .set('Authorization', 'Bearer ' + 'r3KqG4388aUeceKldqC3OQJt5wA3')
             .set('Client_Token', process.env.CLIENT_TOKEN)
             .send(user);

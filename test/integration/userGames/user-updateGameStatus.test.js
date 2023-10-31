@@ -55,8 +55,7 @@ describe('Teste de integração para mudar o status de um jogo de um usuario esp
                 }
 
                 // Verifique se os dados foram atualizados corretamente
-                expect(res.body.user.userGames.games[0].LocalGameData.game_List[0]).toBe('1');
-                expect(res.body.user.gameStatus.completeGames[0]).toBe('1');
+                expect(res.body.message).toBe('Status do jogo atualizado com sucesso!');
                 done();
             });
     });

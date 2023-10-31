@@ -21,13 +21,11 @@ describe('Teste de integração para atualizar um usuário específico', () => {
             email: 'teste@gmail.com',
         };
 
-        const response = await request(host)
+        await request(host)
             .post('/api/v1/user')
             .set('Authorization', 'Bearer ' + 'r3KqG4388aUeceKldqC3OQJt5wA3')
             .set('Client_Token', process.env.CLIENT_TOKEN)
             .send(user);
-
-        let userId = response.body._id;
     });
 
     it('Deve atualizar um usuário específico com status 200', (done) => {
