@@ -117,6 +117,20 @@ router.put('/user/games', verifyToken, async (req, res) => {
     }
 });
 
+//Rota para pegar os jogos do usuário
+router.get('/user/games', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    try {
+        const response = await userController.getLocalUserGames(uid);
+        console.log({message: `Jogos locais do usuario ${uid} foram encontrados com sucesso`, games: response})
+        res.status(200).json({message: 'Jogos encontrados com sucesso!', games: response});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
+
+// Rota para atualizar o status do jogo do usuário
 router.put('/user/games/status', verifyToken, async (req, res) => {
     const uid = req.uid;
     const {game, status} = req.body;
@@ -136,15 +150,19 @@ router.put('/user/games/status', verifyToken, async (req, res) => {
     }
 });
 
-//Rota para pegar os jogos do usuário
-router.get('/user/games', verifyToken, async (req, res) => {
+// Rota para pegar o status dos jogos do usuário
+router.get('/user/games/status', verifyToken, async (req, res) => {
     const uid = req.uid;
     try {
-        const response = await userController.getLocalUserGames(uid);
-        console.log({message: `Jogos locais do usuario ${uid} foram encontrados com sucesso`, games: response})
-        res.status(200).json({message: 'Jogos encontrados com sucesso!', games: response});
+        const response = await userController.getUserGameStatus(uid);
+        console.log({message: `Status dos jogos do usuario ${uid} foram encontrados com sucesso`, gameStatusList: response})
+        res.status(200).json({message: 'Status dos jogos encontrados com sucesso!', gameStatusList: response});
     } catch (error) {
-        res.status(500).json({message: error.message});
+        if (error.message === 'Usuário não encontrado!') {
+            res.status(404).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
     }
 });
 

@@ -140,6 +140,7 @@ const userController = {
         }
     },
 
+    // Função para buscar os jogos de um usuário
     async getLocalUserGames(id) {
         try {
             if (await verifyIfUserExists(id) === false) {
@@ -156,6 +157,7 @@ const userController = {
         }
     },
 
+    // Função para atualizar o status de um jogo de um usuário
     async updateGameStatus(id, game, status) {
         try {
             if (await verifyIfUserExists(id) === false) {
@@ -210,6 +212,23 @@ const userController = {
         }
     },
 
+    async getUserGameStatus(id) {
+        try {
+            if (await verifyIfUserExists(id) === false) {
+                throw new Error('Usuário não encontrado!');
+            }
+
+            const user = await UserModel.findById(id);
+            if (user) {
+                return user.gameStatus;
+            }
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+    // Função para deletar um jogo de um usuário
     async deleteLocalGameFromUser(id, game) {
         try {
 
