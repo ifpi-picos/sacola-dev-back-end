@@ -18,7 +18,7 @@ describe('Teste de integração para o cadastro de usuário', () => {
 
     it('Deve retornar status 201 e um objeto com o usuário cadastrado', (done) => {
         request(host)
-            .post('/api/v1/users')
+            .post('/api/v1/user')
             .set('Authorization', 'Bearer ' + 'r3KqG4388aUeceKldqC3OQJt5wA3')
             .set('Client_Token', process.env.CLIENT_TOKEN)
             .send({

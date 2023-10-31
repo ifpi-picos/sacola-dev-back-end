@@ -116,17 +116,23 @@ router.put('/user/games', verifyToken, async (req, res) => {
         }
     }
 });
-// Rota para deletar jogo do usuário
-router.delete('/user/games', verifyToken, async (req, res) => {
-    const uid = req.uid;
-    const {game} = req.body;
-    try {
-        const user = await userController.deleteLocalGameFromUser(uid, game);
 
-        res.status(204).json({message: 'Jogo deletado com sucesso!'});
+router.put('/user/games/status', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    const {game, status} = req.body;
+    try {
+        const user = await userController.updateGameStatus(uid, game, status);
+        console.log({message: 'Status do jogo atualizado com sucesso!', user: user})
+        res.status(200).json({message: 'Status do jogo atualizado com sucesso!'});
     } catch (error) {
         console.log(error.message)
-        res.status(500).json({message: error.message});
+        if (error.message === 'Jogo não informado!') {
+            res.status(400).json({message: error.message});
+        } else if (error.message === 'Jogo já está na lista!') {
+            res.status(400).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
     }
 });
 
@@ -141,6 +147,23 @@ router.get('/user/games', verifyToken, async (req, res) => {
         res.status(500).json({message: error.message});
     }
 });
+
+// Rota para deletar jogo do usuário
+router.delete('/user/games', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    const {game} = req.body;
+    try {
+        const user = await userController.deleteLocalGameFromUser(uid, game);
+
+        res.status(204).json({message: 'Jogo deletado com sucesso!'});
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({message: error.message});
+    }
+});
+
+
+
 
 
 // Rota para adicionar o steamID do usuário

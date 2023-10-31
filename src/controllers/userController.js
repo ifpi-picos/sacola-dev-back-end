@@ -156,6 +156,60 @@ const userController = {
         }
     },
 
+    async updateGameStatus(id, game, status) {
+        try {
+            if (await verifyIfUserExists(id) === false) {
+                throw new Error('Usuário não encontrado!');
+            }
+
+            const user = await UserModel.findById(id);
+            if (user) {
+                const gameList = user.userGames.games[0].LocalGameData.game_List;
+                const gameExists = gameList.includes(game);
+                if (gameExists) {
+                    switch (status) {
+                        case 'complete':
+                            if (user.gameStatus.completeGames.includes(game)) {
+                                throw new Error('Jogo já está na lista!');
+                            }
+                            user.gameStatus.completeGames.push(game);
+                            break;
+                        case 'playing':
+                            if (user.gameStatus.playingGames.includes(game)) {
+                                throw new Error('Jogo já está na lista!');
+                            }
+                            user.gameStatus.playingGames.push(game);
+                            break;
+
+                        case 'abandoned':
+                            if (user.gameStatus.abandonedGames.includes(game)) {
+                                throw new Error('Jogo já está na lista!');
+                            }
+                            user.gameStatus.abandonedGames.push(game);
+                            break;
+
+                        case 'playingLater':
+                            if (user.gameStatus.playingLaterGames.includes(game)) {
+                                throw new Error('Jogo já está na lista!');
+                            }
+                            user.gameStatus.playingLaterGames.push(game);
+                            break;
+
+                        default:
+                            throw new Error('Status não informado!');
+                    }
+                    await user.save();
+                    return user;
+                } else {
+                    throw new Error('Jogo não encontrado!');
+                }
+            }
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
     async deleteLocalGameFromUser(id, game) {
         try {
 

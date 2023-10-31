@@ -610,6 +610,108 @@
         "description": "Remove um jogo do jogador",
         "operationId": "removeGameFromUser"
       }
+    },
+    "/api/v1/user/games/status" : {
+      "put": {
+        "tags": [
+          "User Games Status"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "Client_Token",
+            "in": "header",
+            "required": true
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "properties": {
+                  "game": {
+                    "type": "string",
+                    "description": "jogo do usuário"
+                  },
+                  "status": {
+                    "type": "string",
+                    "description": "status do jogo"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Status do jogo do jogador atualizado com sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type":"string",
+                      "description": "Mensagem de sucesso"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Não Autorizado: A autenticação é necessária e falhou ou não foi fornecida.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "409": {
+            "description": "Conflito: O jogo não existe no usuário",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Erro interno do servidor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "properties": {
+                    "message": {
+                      "type": "string",
+                      "description": "Mensagem de erro"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "summary": "Atualiza o status de um jogo do jogador",
+        "description": "Atualiza o status de um jogo do jogador",
+        "operationId": "updateGameStatusFromUser"
+      }
     }
   },
   "components": {

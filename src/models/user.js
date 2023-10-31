@@ -46,6 +46,12 @@ const userSchema = new Schema({
         steam: {
             type: String,
         }
+    },
+    gameStatus: {
+        completeGames: [],
+        playingGames: [],
+        abandonedGames: [],
+        playingLaterGames: [],
     }
 }, {timestamps: true});
 
