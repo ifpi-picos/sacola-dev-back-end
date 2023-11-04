@@ -176,7 +176,7 @@ const userController = {
                             }
                             user.gameStatus.completeGames.push(game);
                             break;
-                        case 'playing':
+                        case 'playingNow':
                             if (user.gameStatus.playingGames.includes(game)) {
                                 throw new Error('Jogo já está na lista!');
                             }
@@ -212,6 +212,7 @@ const userController = {
         }
     },
 
+    // Função para buscar o status de um jogo de um usuário
     async getUserGameStatus(id) {
         try {
             if (await verifyIfUserExists(id) === false) {
@@ -221,6 +222,55 @@ const userController = {
             const user = await UserModel.findById(id);
             if (user) {
                 return user.gameStatus;
+            }
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+    // Função para remover um jogo da lista de status de um usuário
+    async removeGameFromStatusList(id, game, status) {
+        try {
+            if (await verifyIfUserExists(id) === false) {
+                throw new Error('Usuário não encontrado!');
+            }
+
+            const user = await UserModel.findById(id);
+            if (user) {
+                switch (status) {
+                    case 'complete':
+                        if (!user.gameStatus.completeGames.includes(game)) {
+                            throw new Error('Jogo não está na lista!');
+                        }
+                        user.gameStatus.completeGames = user.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
+                        break;
+                    case 'playingNow':
+                        if (!user.gameStatus.playingGames.includes(game)) {
+                            throw new Error('Jogo não está na lista!');
+                        }
+                        user.gameStatus.playingGames = user.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
+                        break;
+
+                    case 'abandoned':
+                        if (!user.gameStatus.abandonedGames.includes(game)) {
+                            throw new Error('Jogo não está na lista!');
+                        }
+                        user.gameStatus.abandonedGames = user.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
+                        break;
+
+                    case 'playingLater':
+                        if (!user.gameStatus.playingLaterGames.includes(game)) {
+                            throw new Error('Jogo não está na lista!');
+                        }
+                        user.gameStatus.playingLaterGames = user.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
+                        break;
+
+                    default:
+                        throw new Error('Status não informado!');
+                }
+                await user.save();
+                return user;
             }
 
         } catch (error) {

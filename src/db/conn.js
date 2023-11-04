@@ -22,6 +22,15 @@ async function main() {
 
     } catch (error) {
         console.log(`Erro: ${error}`)
+        if (error.name === "MongoNetworkError") {
+            console.log("Verifique sua conexão com a internet.")
+        } else if (error.name === "MongoServerSelectionError") {
+            if (mongoLocalPassword === undefined) {
+                console.log("Verifique se o banco hospedado na nuvem está ativo.")
+            } else {
+                console.log("Verifique se o banco local está ativo.")
+            }
+        }
     }
 }
 
