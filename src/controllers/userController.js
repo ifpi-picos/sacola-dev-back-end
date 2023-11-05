@@ -1,6 +1,35 @@
 const UserModel = require('../models/user');
-const {verifyIfUserExists} = require('./verifications');
+const {verifyIfUserExists} = require('../utils/verifications');
 
+// Funções auxiliares
+function removeGameFromOtherStatusList(user, game, status) {
+    const userCopy = user;
+    switch (status) {
+        case 'complete':
+            userCopy.gameStatus.playingGames = userCopy.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
+            userCopy.gameStatus.abandonedGames = userCopy.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
+            userCopy.gameStatus.playingLaterGames = userCopy.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
+            break;
+        case 'playingNow':
+            userCopy.gameStatus.completeGames = userCopy.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
+            userCopy.gameStatus.abandonedGames = userCopy.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
+            userCopy.gameStatus.playingLaterGames = userCopy.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
+            break;
+        case 'abandoned':
+            userCopy.gameStatus.completeGames = userCopy.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
+            userCopy.gameStatus.playingGames = userCopy.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
+            userCopy.gameStatus.playingLaterGames = userCopy.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
+            break;
+        case 'playingLater':
+            userCopy.gameStatus.completeGames = userCopy.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
+            userCopy.gameStatus.playingGames = userCopy.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
+            userCopy.gameStatus.abandonedGames = userCopy.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
+            break;
+        default:
+            throw new Error('Status não informado!');
+    }
+    return userCopy;
+}
 
 // Funções do controller
 const userController = {
@@ -164,7 +193,7 @@ const userController = {
                 throw new Error('Usuário não encontrado!');
             }
 
-            const user = await UserModel.findById(id);
+            let user = await UserModel.findById(id);
             if (user) {
                 const gameList = user.userGames.games[0].LocalGameData.game_List;
                 const gameExists = gameList.includes(game);
@@ -174,12 +203,14 @@ const userController = {
                             if (user.gameStatus.completeGames.includes(game)) {
                                 throw new Error('Jogo já está na lista!');
                             }
+                            user = removeGameFromOtherStatusList(user, game, status);
                             user.gameStatus.completeGames.push(game);
                             break;
                         case 'playingNow':
                             if (user.gameStatus.playingGames.includes(game)) {
                                 throw new Error('Jogo já está na lista!');
                             }
+                            user = removeGameFromOtherStatusList(user, game, status);
                             user.gameStatus.playingGames.push(game);
                             break;
 
@@ -187,6 +218,7 @@ const userController = {
                             if (user.gameStatus.abandonedGames.includes(game)) {
                                 throw new Error('Jogo já está na lista!');
                             }
+                            user = removeGameFromOtherStatusList(user, game, status);
                             user.gameStatus.abandonedGames.push(game);
                             break;
 
@@ -194,6 +226,7 @@ const userController = {
                             if (user.gameStatus.playingLaterGames.includes(game)) {
                                 throw new Error('Jogo já está na lista!');
                             }
+                            user = removeGameFromOtherStatusList(user, game, status);
                             user.gameStatus.playingLaterGames.push(game);
                             break;
 

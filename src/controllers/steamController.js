@@ -1,5 +1,5 @@
 const UserModel = require("../models/user");
-const {verifyIfUserExists} = require('./verifications');
+const {verifyIfUserExists} = require('../utils/verifications');
 const {getSteamGameById} = require("../services/steamApi/steam");
 
 const steamController = {
