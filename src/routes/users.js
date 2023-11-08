@@ -148,15 +148,36 @@ router.put('/user/games/status', verifyToken, async (req, res) => {
             res.status(500).json({message: error.message});
         }
     }
+
 });
 
-// Rota para pegar o status dos jogos do usuário
-router.get('/user/games/status', verifyToken, async (req, res) => {
+// Rota para pegar a lista de status dos jogos do usuário
+router.get('/user/games/status/:status?', verifyToken, async (req, res) => {
     const uid = req.uid;
+    const {status} = req.params;
+    console.log(status)
     try {
-        const response = await userController.getUserGameStatus(uid);
+        const response = await userController.getUserGamesStatus(uid, status);
         console.log({message: `Status dos jogos do usuario ${uid} foram encontrados com sucesso`, gameStatusList: response})
         res.status(200).json({message: 'Status dos jogos encontrados com sucesso!', gameStatusList: response});
+    } catch (error) {
+        if (error.message === 'Usuário não encontrado!') {
+            res.status(404).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
+    }
+});
+
+// Rota para pegar o status especifico de um jogo do usuário
+router.get('/user/games/status/game/:gameId?', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    const {gameId} = req.params;
+
+    try {
+        const response = await userController.getUserGameStatusById(uid, gameId);
+        console.log({message: `Status do jogo ${gameId} do usuario ${uid} foi encontrado com sucesso`, gameStatus: response})
+        res.status(200).json({message: 'Status do jogo encontrado com sucesso!', gameStatus: response});
     } catch (error) {
         if (error.message === 'Usuário não encontrado!') {
             res.status(404).json({message: error.message});
@@ -190,7 +211,6 @@ router.delete('/user/games', verifyToken, async (req, res) => {
     const {game} = req.body;
     try {
         const user = await userController.deleteLocalGameFromUser(uid, game);
-
         res.status(204).json({message: 'Jogo deletado com sucesso!'});
     } catch (error) {
         console.log(error.message)

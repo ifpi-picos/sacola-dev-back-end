@@ -195,6 +195,7 @@ const userController = {
 
             let user = await UserModel.findById(id);
             if (user) {
+                console.log(user.userGames)
                 const gameList = user.userGames.games[0].LocalGameData.game_List;
                 const gameExists = gameList.includes(game);
                 if (gameExists) {
@@ -246,7 +247,7 @@ const userController = {
     },
 
     // Função para buscar o status de um jogo de um usuário
-    async getUserGameStatus(id) {
+    async getUserGamesStatus(id, status) {
         try {
             if (await verifyIfUserExists(id) === false) {
                 throw new Error('Usuário não encontrado!');
@@ -254,7 +255,46 @@ const userController = {
 
             const user = await UserModel.findById(id);
             if (user) {
-                return user.gameStatus;
+                switch (status) {
+                    case 'completeGames':
+                        return user.gameStatus.completeGames;
+                    case 'playingGames':
+                        return user.gameStatus.playingGames;
+                    case 'abandonedGames':
+                        return user.gameStatus.abandonedGames;
+                    case 'playingLaterGames':
+                        return user.gameStatus.playingLaterGames;
+                    case undefined:
+                        return user.gameStatus;
+                    default:
+                        throw new Error('Status não informado!');
+                }
+            }
+
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+    // Função para buscar o status de um jogo de um usuário pelo id do jogo
+    async getUserGameStatusById(id, game) {
+        try {
+            if (await verifyIfUserExists(id) === false) {
+                throw new Error('Usuário não encontrado!');
+            }
+            const user = await UserModel.findById(id);
+            if (user) {
+                if (user.gameStatus.completeGames.includes(game)) {
+                    return 'complete';
+                } else if (user.gameStatus.playingGames.includes(game)) {
+                    return 'playingNow';
+                } else if (user.gameStatus.abandonedGames.includes(game)) {
+                    return 'abandoned';
+                } else if (user.gameStatus.playingLaterGames.includes(game)) {
+                    return 'playingLater';
+                } else {
+                    throw new Error('Jogo não encontrado!');
+                }
             }
 
         } catch (error) {
