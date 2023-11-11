@@ -10,7 +10,7 @@ async function main() {
 
         if (mongoLocalPassword === undefined) {
             await mongoose.connect(
-                `mongodb+srv://condearmand:${mongoPassword}@cluster0.3nrm5es.mongodb.net/?retryWrites=true&w=majority`
+                `mongodb+srv://condearmand:${mongoPassword}@cluster0.3nrm5es.mongodb.net/GameMate?retryWrites=true&w=majority`
             )
             console.log("Conectando com o banco hospedado na nuvem...")
         } else {
