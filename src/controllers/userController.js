@@ -384,6 +384,10 @@ const userController = {
 
                 user.userGames.games_total -= 1;
                 user.userGames.games = {LocalGameData};
+                user.gameStatus.completeGames = user.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
+                user.gameStatus.playingGames = user.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
+                user.gameStatus.abandonedGames = user.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
+                user.gameStatus.playingLaterGames = user.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
 
                 await user.save();
                 return user;
