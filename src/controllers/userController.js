@@ -36,9 +36,13 @@ const userController = {
     // Função para criar um novo usuário
     async createUser(userDTO) {
         try {
-            const user = await UserModel.findById(userDTO._id);
+            let user = await UserModel.findById(userDTO._id);
             if (!user) {
-                return await UserModel.create(userDTO);
+                user = await UserModel.create(userDTO);
+                user = await UserModel.findById(userDTO._id);
+                user.userGames.games = {LocalGameData: {game_count: 0, game_List: []}};
+                await user.save();
+                return user;
             } else {
                 throw new Error('Usuário já cadastrado!');
             }

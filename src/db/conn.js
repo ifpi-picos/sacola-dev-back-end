@@ -3,7 +3,7 @@ const mongoose = require("mongoose")
 async function main() {
 
     const mongoPassword = process.env.MONGO_PASSWORD
-    const mongoLocalPassword = process.env.MONGO_LOCAL_PASSWORD
+    const mongoLocalPassword = process.env.MONGO_LOCAL_PASSWOR
 
     try {
         mongoose.set("strictQuery", true)
