@@ -19,6 +19,7 @@ app.use(express.json());
 connectDB().then(r => console.log('Conectado com o banco!')).catch(e => console.log(`Erro: ${e}`));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+app.get('/api-docs', swaggerUi.setup(swaggerDocs));
 
 app.get('/', (req, res) => {
     res.send('<h1 style="text-align: center">Api Online!!!</h1> <h2 style="text-align: center">Acesse a documentação' +
