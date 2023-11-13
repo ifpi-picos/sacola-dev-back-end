@@ -11,7 +11,7 @@ const swaggerDocs = require('./swagger.json')
 
 const app = express();
 
-app.use(cors());
+app.use(cors([process.env.FRONTEND_URL, process.env.FRONTEND_URL_PROD]));
 app.use(helmet());
 app.use(compression());
 app.use(express.json());
