@@ -39,9 +39,6 @@ const userController = {
             let user = await UserModel.findById(userDTO._id);
             if (!user) {
                 user = await UserModel.create(userDTO);
-                user = await UserModel.findById(userDTO._id);
-                user.userGames.games = {LocalGameData: {game_count: 0, game_List: []}};
-                await user.save();
                 return user;
             } else {
                 throw new Error('Usuário já cadastrado!');
@@ -136,34 +133,10 @@ const userController = {
 
             const user = await UserModel.findById(id);
             if (user) {
+                user.userGames.games.LocalGameData.game_List.push(game);
+                user.userGames.games.LocalGameData.game_count += 1;
 
-                //verifica se o jogo já está na lista e se estiver não adiciona
-                if (user.userGames.games.length > 0) {
-                    const gameList = user.userGames.games[0].LocalGameData.game_List;
-                    const gameExists = gameList.includes(game);
-                    if (gameExists) {
-                        console.log(gameExists, game);
-                        throw new Error('Jogo já adicionado!');
-                    }
-                    console.log(gameExists, game);
-                }
-
-
-                user.userGames.games_total += 1;
-
-                if (user.userGames.games.length === 0) {
-                    user.userGames.games = {LocalGameData: {game_count: 1, game_List: [game]}};
-                    await user.save();
-                    return user;
-                }
-
-                const LocalGameData = {
-                    game_count: user.userGames.games[0].LocalGameData.game_count + 1,
-                    game_List: [...user.userGames.games[0].LocalGameData.game_List, game]
-                }
-
-                user.userGames.games = {LocalGameData};
-
+                user.userGames.games_total = user.userGames.games.LocalGameData.game_count + user.userGames.games.steam.game_count;
                 await user.save();
                 return user;
             }
@@ -182,7 +155,7 @@ const userController = {
 
             const user = await UserModel.findById(id);
             if (user) {
-                return user.userGames.games[0].LocalGameData;
+                return user.userGames.games.LocalGameData;
             }
 
         } catch (error) {
@@ -200,7 +173,7 @@ const userController = {
             let user = await UserModel.findById(id);
             if (user) {
                 console.log(user.userGames)
-                const gameList = user.userGames.games[0].LocalGameData.game_List;
+                const gameList = user.userGames.games.LocalGameData.game_List;
                 const gameExists = gameList.includes(game);
                 if (gameExists) {
                     switch (status) {
@@ -373,21 +346,16 @@ const userController = {
                     throw new Error('Usuário não possui jogos!');
                 }
 
-                if (user.userGames.games[0].LocalGameData.game_List.length === 0) {
+                if (user.userGames.games.LocalGameData.game_List.length === 0) {
                     throw new Error('Usuário não possui jogos!');
-                } else if (!user.userGames.games[0].LocalGameData.game_List.includes(game)) {
+                } else if (!user.userGames.games.LocalGameData.game_List.includes(game)) {
                     throw new Error('Jogo não encontrado!');
                 }
 
 
-                const LocalGameData = {
-                    game_count: user.userGames.games[0].LocalGameData.game_count - 1,
-                    game_List: user.userGames.games[0].LocalGameData.game_List.filter((gameItem) => gameItem !== game)
-                }
-
-
+                user.userGames.games.LocalGameData.game_List = user.userGames.games.LocalGameData.game_List.filter((gameItem) => gameItem !== game);
+                user.userGames.games.LocalGameData.game_count -= 1;
                 user.userGames.games_total -= 1;
-                user.userGames.games = {LocalGameData};
                 user.gameStatus.completeGames = user.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
                 user.gameStatus.playingGames = user.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
                 user.gameStatus.abandonedGames = user.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);

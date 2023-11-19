@@ -19,8 +19,12 @@ class middleware {
             }
             return res.status(401).json({message: 'Unauthorized'});
         } catch (error) {
-            console.log('error', error);
-            return res.status(500).json({message: 'Internal error'});
+            console.log('error', error.message);
+           if (error.message.includes('Firebase ID token has expired')) {
+               return res.status(401).json({message: 'Unauthorized'});
+           } else {
+                return res.status(500).json({message: error.message});
+           }
         }
     }
 }

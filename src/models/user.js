@@ -38,9 +38,26 @@ const userSchema = new Schema({
             type: Number,
             default: 0,
         },
-        games: [{
-            type: Object,
-        }]
+        games: {
+            LocalGameData: {
+                game_count: {
+                    type: Number,
+                    default: 0,
+                },
+                game_List: [{
+                    type: String,
+                }]
+            },
+            steam: {
+                game_count: {
+                    type: Number,
+                    default: 0,
+                },
+                game_List: [{
+                    type: String,
+                }]
+            }
+        }
     },
     storeKeys: {
         steam: {

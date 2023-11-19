@@ -1,4 +1,5 @@
 const UserModel = require("../models/user");
+const GameModel = require("../models/game");
 const {verifyIfUserExists} = require('../utils/verifications');
 const {getSteamGameById} = require("../services/steamApi/steam");
 
@@ -32,17 +33,41 @@ const steamController = {
     },
 
     //Função para adicionar os jogos steam do usuário
-    async addSteamGames(id, games) {
+    async addSteamGamesToUser(id, games) {
         try {
             await verifyIfUserExists(id);
             const user = await UserModel.findById(id);
             if (user) {
-                user.userGames.games = {steam_game_count: games.response.game_count, steam: games.response.games};
-                user.userGames.games_total = games.response.game_count;
+                user.userGames.games.steam.game_List = games.response.games.map(game => game.appid);
+                user.userGames.games.steam.game_count = games.response.game_count;
+
+                user.userGames.games_total = user.userGames.games.LocalGameData.game_count + user.userGames.games.steam.game_count;
                 await user.save();
                 return user;
             }
         } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+    async addSteamGamesToDatabase(games) {
+        try {
+            const steamGames = games.response.games;
+            console.log(steamGames.length);
+            for (let i = 0; i < steamGames.length; i++) {
+                if (await GameModel.Game.findById(steamGames[i].appid)) {
+                    continue;
+                }
+                const gameDetails = await getSteamGameById(steamGames[i].appid);
+                const game = new GameModel.Game({
+                    _id: steamGames[i].appid,
+                    infos: gameDetails[steamGames[i].appid].data
+                });
+
+                await game.save();
+            }
+        } catch (error) {
+            console.log(error)
             throw new Error(error.message);
         }
     },

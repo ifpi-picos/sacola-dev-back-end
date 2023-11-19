@@ -106,6 +106,7 @@ router.put('/user/games', verifyToken, async (req, res) => {
     const {game} = req.body;
     try {
         const user = await userController.addGameToUser(uid, game);
+        console.log({message: 'Jogo adicionado com sucesso!', user: user})
         res.status(200).json({message: 'Jogo adicionado com sucesso!', user: user});
     } catch (error) {
         console.log(error.message)
@@ -144,8 +145,8 @@ router.put('/user/games/status', verifyToken, async (req, res) => {
             res.status(400).json({message: error.message});
         } else if (error.message === 'Jogo já está na lista!') {
             res.status(400).json({message: error.message});
-        } else {
-            res.status(500).json({message: error.message});
+        } else if (error.message === 'Jogo não encontrado!'){
+            res.status(404).json({message: error.message});
         }
     }
 
@@ -180,6 +181,8 @@ router.get('/user/games/status/game/:gameId?', verifyToken, async (req, res) => 
         res.status(200).json({message: 'Status do jogo encontrado com sucesso!', gameStatus: response});
     } catch (error) {
         if (error.message === 'Usuário não encontrado!') {
+            res.status(404).json({message: error.message});
+        } else if (error.message === 'Jogo não encontrado!'){
             res.status(404).json({message: error.message});
         } else {
             res.status(500).json({message: error.message});
@@ -223,28 +226,38 @@ router.delete('/user/games', verifyToken, async (req, res) => {
 
 
 // Rota para adicionar o steamID do usuário
-router.post('/users/steam', verifyToken, async (req, res) => {
-    const {id} = req.params;
+router.put('/user/steam', verifyToken, async (req, res) => {
+    const uid = req.uid;
     const {steamId} = req.body;
     try {
-        const user = await steamController.addSteamId(id, steamId);
-        res.status(200).json({message: 'SteamID adicionado com sucesso!', user: user});
+        const user = await steamController.addSteamId(uid, steamId);
+        res.status(200).json({message: 'SteamID adicionado com sucesso!'});
     } catch (error) {
-        res.status(500).json({message: error.message});
+        console.log(error.message)
+        if (error.message === 'SteamID não informado!') {
+            res.status(400).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
     }
 });
 
 // Add steam games to user
-router.post('/users/:id/games', verifyToken, async (req, res) => {
-    const {id} = req.params;
+router.put('/user/steam/games', verifyToken, async (req, res) => {
+    const uid = req.uid;
     try {
-        const userSteamId = await steamController.getSteamId(id);
+        const userSteamId = await steamController.getSteamId(uid);
 
         const userGames = await steam.getGamesOwned(userSteamId);
 
-        const user = await steamController.addSteamGames(id, userGames);
-        res.status(200).json({message: 'Jogos adicionados com sucesso!', user: user});
+        const user = await steamController.addSteamGamesToUser(uid, userGames);
+
+        await steamController.addSteamGamesToDatabase(userGames);
+
+        console.log({message: 'Jogos adicionados com sucesso!', user: user})
+        res.status(200).json({message: 'Jogos adicionados com sucesso!'});
     } catch (error) {
+        console.log(error.message)
         res.status(500).json({message: error.message});
     }
 });

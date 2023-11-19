@@ -2,10 +2,13 @@ const mongoose = require('mongoose');
 const {Schema} = mongoose;
 
 const gameSchema = new Schema({
-    id: {
+    _id: {
         type: String,
         required: true
-    }
+    },
+    infos: {
+        type: Object,
+    },
 }, {timestamps: true});
 
 const Game = mongoose.model('Game', gameSchema);
