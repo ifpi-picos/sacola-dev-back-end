@@ -32,6 +32,20 @@ const steamController = {
         }
     },
 
+    async removeSteamIdFromUser(id) {
+        try {
+            await verifyIfUserExists(id);
+            const user = await UserModel.findById(id);
+            if (user) {
+                user.storeKeys.steam = null;
+                await user.save();
+                return user;
+            }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
     //Função para adicionar os jogos steam do usuário
     async addSteamGamesToUser(id, games) {
         try {
@@ -40,6 +54,24 @@ const steamController = {
             if (user) {
                 user.userGames.games.steam.game_List = games.response.games.map(game => game.appid);
                 user.userGames.games.steam.game_count = games.response.game_count;
+
+                user.userGames.games_total = user.userGames.games.LocalGameData.game_count + user.userGames.games.steam.game_count;
+                await user.save();
+                return user;
+            }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
+    //Função para apagar os jogos steam do usuário
+    async removeSteamGamesFromUser(id) {
+        try {
+            await verifyIfUserExists(id);
+            const user = await UserModel.findById(id);
+            if (user) {
+                user.userGames.games.steam.game_List = [];
+                user.userGames.games.steam.game_count = 0;
 
                 user.userGames.games_total = user.userGames.games.LocalGameData.game_count + user.userGames.games.steam.game_count;
                 await user.save();

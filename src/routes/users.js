@@ -242,6 +242,40 @@ router.put('/user/steam', verifyToken, async (req, res) => {
     }
 });
 
+// Rota para pegar o steamID do usuário
+router.get('/user/steam', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    try {
+        const response = await steamController.getSteamId(uid);
+        res.status(200).json({message: 'SteamID encontrado com sucesso!', steamId: response});
+    } catch (error) {
+        console.log(error.message)
+        if (error.message === 'SteamID não encontrado!') {
+            res.status(404).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
+    }
+});
+
+// Rota para remover o steamID do usuário
+router.delete('/user/steam', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    try {
+        const user = await steamController.removeSteamIdFromUser(uid);
+        await steamController.removeSteamGamesFromUser(uid);
+        console.log({message: 'SteamID removido com sucesso!', user: user})
+        res.status(204).json({message: 'SteamID removido com sucesso!'});
+    } catch (error) {
+        console.log(error.message)
+        if (error.message === 'SteamID não encontrado!') {
+            res.status(404).json({message: error.message});
+        } else {
+            res.status(500).json({message: error.message});
+        }
+    }
+});
+
 // Add steam games to user
 router.put('/user/steam/games', verifyToken, async (req, res) => {
     const uid = req.uid;
