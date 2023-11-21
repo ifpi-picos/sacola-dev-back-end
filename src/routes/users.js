@@ -296,5 +296,17 @@ router.put('/user/steam/games', verifyToken, async (req, res) => {
     }
 });
 
+// Get steam games from user
+router.get('/user/steam/games', verifyToken, async (req, res) => {
+    const uid = req.uid;
+    try {
+        const response = await steamController.getSteamGamesFromUser(uid);
+        res.status(200).json({message: 'Jogos encontrados com sucesso!', games: response});
+    } catch (error) {
+        console.log(error.message)
+        res.status(500).json({message: error.message});
+    }
+});
+
 
 module.exports = router;

@@ -64,6 +64,25 @@ const steamController = {
         }
     },
 
+    // Função para pegar os jogos steam do usuário
+    async getSteamGamesFromUser(id) {
+        try {
+            await verifyIfUserExists(id);
+            const user = await UserModel.findById(id);
+            if (user) {
+                const userGamesList = user.userGames.games.steam.game_List;
+                const steamGames = [];
+                for (let i = 0; i < userGamesList.length; i++) {
+                    const game = await GameModel.Game.findById(userGamesList[i]);
+                    steamGames.push(game);
+                }
+                return steamGames;
+            }
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
     //Função para apagar os jogos steam do usuário
     async removeSteamGamesFromUser(id) {
         try {
@@ -82,6 +101,7 @@ const steamController = {
         }
     },
 
+    //Função para adicionar os jogo steam no banco de dados
     async addSteamGamesToDatabase(games) {
         try {
             const steamGames = games.response.games;
@@ -104,6 +124,7 @@ const steamController = {
         }
     },
 
+    //Função para pegar os jogos steam do usuário
     async getSteamGameInfo(steamGameId) {
         try {
             return await getSteamGameById(steamGameId);
