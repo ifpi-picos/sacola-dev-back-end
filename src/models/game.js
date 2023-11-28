@@ -6,6 +6,9 @@ const gameSchema = new Schema({
         type: String,
         required: true
     },
+    cover: {
+        type: String,
+    },
     infos: {
         type: Object,
     },

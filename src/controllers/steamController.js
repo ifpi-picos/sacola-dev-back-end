@@ -2,6 +2,7 @@ const UserModel = require("../models/user");
 const GameModel = require("../models/game");
 const {verifyIfUserExists} = require('../utils/verifications');
 const {getSteamGameById} = require("../services/steamApi/steam");
+const {getSteamGridDbGameCover} = require("../services/steamGridDb/steamgriddb.js");
 
 const steamController = {
     //Função para adicionar o steamId do usuário
@@ -111,8 +112,13 @@ const steamController = {
                     continue;
                 }
                 const gameDetails = await getSteamGameById(steamGames[i].appid);
+                let cover = await getSteamGridDbGameCover(steamGames[i].appid);
+                if (!cover) {
+                    cover = `https://steamcdn-a.akamaihd.net/steam/apps/${steamGames[i].appid}/library_600x900.jpg`
+                }
                 const game = new GameModel.Game({
                     _id: steamGames[i].appid,
+                    cover: cover,
                     infos: gameDetails[steamGames[i].appid].data
                 });
 
