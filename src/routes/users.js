@@ -134,9 +134,9 @@ router.get('/user/games', verifyToken, async (req, res) => {
 // Rota para atualizar o status do jogo do usuário
 router.put('/user/games/status', verifyToken, async (req, res) => {
     const uid = req.uid;
-    const {game, status} = req.body;
+    const {game, status, location} = req.body;
     try {
-        const user = await userController.updateGameStatus(uid, game, status);
+        const user = await userController.updateGameStatus(uid, game, status, location);
         console.log({message: 'Status do jogo atualizado com sucesso!', user: user})
         res.status(200).json({message: 'Status do jogo atualizado com sucesso!'});
     } catch (error) {

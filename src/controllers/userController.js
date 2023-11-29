@@ -2,31 +2,58 @@ const UserModel = require('../models/user');
 const {verifyIfUserExists} = require('../utils/verifications');
 
 // Funções auxiliares
-function removeGameFromOtherStatusList(user, game, status) {
+function removeGameFromOtherStatusList(user, game, status, location) {
     const userCopy = user;
-    switch (status) {
-        case 'complete':
-            userCopy.gameStatus.playingGames = userCopy.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
-            userCopy.gameStatus.abandonedGames = userCopy.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
-            userCopy.gameStatus.playingLaterGames = userCopy.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
-            break;
-        case 'playingNow':
-            userCopy.gameStatus.completeGames = userCopy.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
-            userCopy.gameStatus.abandonedGames = userCopy.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
-            userCopy.gameStatus.playingLaterGames = userCopy.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
-            break;
-        case 'abandoned':
-            userCopy.gameStatus.completeGames = userCopy.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
-            userCopy.gameStatus.playingGames = userCopy.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
-            userCopy.gameStatus.playingLaterGames = userCopy.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
-            break;
-        case 'playingLater':
-            userCopy.gameStatus.completeGames = userCopy.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
-            userCopy.gameStatus.playingGames = userCopy.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
-            userCopy.gameStatus.abandonedGames = userCopy.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
-            break;
-        default:
-            throw new Error('Status não informado!');
+    if (location === 'steam') {
+        switch (status) {
+            case 'complete':
+                userCopy.gameStatus.steamGames.playingGames = userCopy.gameStatus.steamGames.playingGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.steamGames.abandonedGames = userCopy.gameStatus.steamGames.abandonedGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.steamGames.playingLaterGames = userCopy.gameStatus.steamGames.playingLaterGames.filter((gameItem) => gameItem !== game);
+                break;
+            case 'playingNow':
+                userCopy.gameStatus.steamGames.completeGames = userCopy.gameStatus.steamGames.completeGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.steamGames.abandonedGames = userCopy.gameStatus.steamGames.abandonedGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.steamGames.playingLaterGames = userCopy.gameStatus.steamGames.playingLaterGames.filter((gameItem) => gameItem !== game);
+                break;
+            case 'abandoned':
+                userCopy.gameStatus.steamGames.completeGames = userCopy.gameStatus.steamGames.completeGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.steamGames.playingGames = userCopy.gameStatus.steamGames.playingGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.steamGames.playingLaterGames = userCopy.gameStatus.steamGames.playingLaterGames.filter((gameItem) => gameItem !== game);
+                break;
+            case 'playingLater':
+                userCopy.gameStatus.steamGames.completeGames = userCopy.gameStatus.steamGames.completeGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.steamGames.playingGames = userCopy.gameStatus.steamGames.playingGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.steamGames.abandonedGames = userCopy.gameStatus.steamGames.abandonedGames.filter((gameItem) => gameItem !== game);
+                break;
+            default:
+                throw new Error('Status não informado!');
+        }
+    } else if (location === 'local') {
+        switch (status) {
+            case 'complete':
+                userCopy.gameStatus.localGames.playingGames = userCopy.gameStatus.localGames.playingGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.localGames.abandonedGames = userCopy.gameStatus.localGames.abandonedGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.localGames.playingLaterGames = userCopy.gameStatus.localGames.playingLaterGames.filter((gameItem) => gameItem !== game);
+                break;
+            case 'playingNow':
+                userCopy.gameStatus.localGames.completeGames = userCopy.gameStatus.localGames.completeGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.localGames.abandonedGames = userCopy.gameStatus.localGames.abandonedGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.localGames.playingLaterGames = userCopy.gameStatus.localGames.playingLaterGames.filter((gameItem) => gameItem !== game);
+                break;
+            case 'abandoned':
+                userCopy.gameStatus.localGames.completeGames = userCopy.gameStatus.localGames.completeGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.localGames.playingGames = userCopy.gameStatus.localGames.playingGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.localGames.playingLaterGames = userCopy.gameStatus.localGames.playingLaterGames.filter((gameItem) => gameItem !== game);
+                break;
+            case 'playingLater':
+                userCopy.gameStatus.localGames.completeGames = userCopy.gameStatus.localGames.completeGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.localGames.playingGames = userCopy.gameStatus.localGames.playingGames.filter((gameItem) => gameItem !== game);
+                userCopy.gameStatus.localGames.abandonedGames = userCopy.gameStatus.localGames.abandonedGames.filter((gameItem) => gameItem !== game);
+                break;
+            default:
+                throw new Error('Status não informado!');
+        }
     }
     return userCopy;
 }
@@ -164,7 +191,7 @@ const userController = {
     },
 
     // Função para atualizar o status de um jogo de um usuário
-    async updateGameStatus(id, game, status) {
+    async updateGameStatus(id, game, status, location) {
         try {
             if (await verifyIfUserExists(id) === false) {
                 throw new Error('Usuário não encontrado!');
@@ -172,52 +199,96 @@ const userController = {
 
             let user = await UserModel.findById(id);
             if (user) {
-                console.log(user.userGames)
-                const gameList = user.userGames.games.LocalGameData.game_List;
-                const gameExists = gameList.includes(game);
-                if (gameExists) {
-                    switch (status) {
-                        case 'complete':
-                            if (user.gameStatus.completeGames.includes(game)) {
-                                throw new Error('Jogo já está na lista!');
-                            }
-                            user = removeGameFromOtherStatusList(user, game, status);
-                            user.gameStatus.completeGames.push(game);
-                            break;
-                        case 'playingNow':
-                            if (user.gameStatus.playingGames.includes(game)) {
-                                throw new Error('Jogo já está na lista!');
-                            }
-                            user = removeGameFromOtherStatusList(user, game, status);
-                            user.gameStatus.playingGames.push(game);
-                            break;
+                console.log(location)
+                if (location === 'steam') {
+                    const gameExistsInSteam = user.userGames.games.steam.game_List;
+                    if (gameExistsInSteam.includes(game)) {
+                        switch (status) {
+                            case 'complete':
+                                if (user.gameStatus.steamGames.completeGames.includes(game)) {
+                                    throw new Error('Jogo já está na lista!');
+                                }
+                                user = removeGameFromOtherStatusList(user, game, status);
+                                user.gameStatus.steamGames.completeGames.push(game);
+                                break;
+                            case 'playingNow':
+                                if (user.gameStatus.steamGames.playingGames.includes(game)) {
+                                    throw new Error('Jogo já está na lista!');
+                                }
+                                user = removeGameFromOtherStatusList(user, game, status);
+                                user.gameStatus.steamGames.playingGames.push(game);
+                                break;
 
-                        case 'abandoned':
-                            if (user.gameStatus.abandonedGames.includes(game)) {
-                                throw new Error('Jogo já está na lista!');
-                            }
-                            user = removeGameFromOtherStatusList(user, game, status);
-                            user.gameStatus.abandonedGames.push(game);
-                            break;
+                            case 'abandoned':
+                                if (user.gameStatus.steamGames.abandonedGames.includes(game)) {
+                                    throw new Error('Jogo já está na lista!');
+                                }
+                                user = removeGameFromOtherStatusList(user, game, status);
+                                user.gameStatus.steamGames.abandonedGames.push(game);
+                                break;
 
-                        case 'playingLater':
-                            if (user.gameStatus.playingLaterGames.includes(game)) {
-                                throw new Error('Jogo já está na lista!');
-                            }
-                            user = removeGameFromOtherStatusList(user, game, status);
-                            user.gameStatus.playingLaterGames.push(game);
-                            break;
+                            case 'playingLater':
+                                if (user.gameStatus.steamGames.playingLaterGames.includes(game)) {
+                                    throw new Error('Jogo já está na lista!');
+                                }
+                                user = removeGameFromOtherStatusList(user, game, status);
+                                user.gameStatus.steamGames.playingLaterGames.push(game);
+                                break;
 
-                        default:
-                            throw new Error('Status não informado!');
+                            default:
+                                throw new Error('Status não informado!');
+                        }
+                        await user.save();
+                        return user;
+                    } else {
+                        throw new Error('Jogo não encontrado!');
                     }
-                    await user.save();
-                    return user;
-                } else {
-                    throw new Error('Jogo não encontrado!');
+                } else if (location === 'local') {
+                    const gameExistsInLocal = user.userGames.games.LocalGameData.game_List;
+                    console.log(gameExistsInLocal)
+                    if (gameExistsInLocal.includes(game)) {
+                        switch (status) {
+                            case 'complete':
+                                if (user.gameStatus.localGames.completeGames.includes(game)) {
+                                    throw new Error('Jogo já está na lista!');
+                                }
+                                user = removeGameFromOtherStatusList(user, game, status);
+                                user.gameStatus.localGames.completeGames.push(game);
+                                break;
+                            case 'playingNow':
+                                if (user.gameStatus.localGames.playingGames.includes(game)) {
+                                    throw new Error('Jogo já está na lista!');
+                                }
+                                user = removeGameFromOtherStatusList(user, game, status);
+                                user.gameStatus.localGames.playingGames.push(game);
+                                break;
+
+                            case 'abandoned':
+                                if (user.gameStatus.localGames.abandonedGames.includes(game)) {
+                                    throw new Error('Jogo já está na lista!');
+                                }
+                                user = removeGameFromOtherStatusList(user, game, status);
+                                user.gameStatus.localGames.abandonedGames.push(game);
+                                break;
+
+                            case 'playingLater':
+                                if (user.gameStatus.localGames.playingLaterGames.includes(game)) {
+                                    throw new Error('Jogo já está na lista!');
+                                }
+                                user = removeGameFromOtherStatusList(user, game, status);
+                                user.gameStatus.localGames.playingLaterGames.push(game);
+                                break;
+
+                            default:
+                                throw new Error('Status não informado!');
+                        }
+                        await user.save();
+                        return user;
+                    } else {
+                        throw new Error('Jogo não encontrado!');
+                    }
                 }
             }
-
         } catch (error) {
             throw new Error(error.message);
         }
@@ -234,13 +305,25 @@ const userController = {
             if (user) {
                 switch (status) {
                     case 'completeGames':
-                        return user.gameStatus.completeGames;
+                        return {
+                            localGames: user.gameStatus.localGames.completeGames,
+                            steamGames: user.gameStatus.steamGames.completeGames,
+                        };
                     case 'playingGames':
-                        return user.gameStatus.playingGames;
+                        return {
+                            localGames: user.gameStatus.localGames.playingGames,
+                            steamGames: user.gameStatus.steamGames.playingGames,
+                        };
                     case 'abandonedGames':
-                        return user.gameStatus.abandonedGames;
+                        return {
+                            localGames: user.gameStatus.localGames.abandonedGames,
+                            steamGames: user.gameStatus.steamGames.abandonedGames,
+                        };
                     case 'playingLaterGames':
-                        return user.gameStatus.playingLaterGames;
+                        return {
+                            localGames: user.gameStatus.localGames.playingLaterGames,
+                            steamGames: user.gameStatus.steamGames.playingLaterGames,
+                        }
                     case undefined:
                         return user.gameStatus;
                     default:

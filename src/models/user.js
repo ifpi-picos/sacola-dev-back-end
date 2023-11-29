@@ -65,10 +65,18 @@ const userSchema = new Schema({
         }
     },
     gameStatus: {
-        completeGames: [],
-        playingGames: [],
-        abandonedGames: [],
-        playingLaterGames: [],
+        localGames: {
+            completeGames: [],
+            playingGames: [],
+            abandonedGames: [],
+            playingLaterGames: [],
+        },
+        steamGames: {
+            completeGames: [],
+            playingGames: [],
+            abandonedGames: [],
+            playingLaterGames: [],
+        }
     }
 }, {timestamps: true});
 
