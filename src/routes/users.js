@@ -63,11 +63,11 @@ router.get('/user', verifyToken, async (req, res) => {
 // Update a user by id
 router.put('/user', verifyToken, async (req, res) => {
     const uid = req.uid;
-    const {name, username, email, photo} = req.body;
+    const {username, photo} = req.body;
     try {
-        const user = await userController.updateUser({uid, name, username, email, photo});
+        const user = await userController.updateUser({uid, username, photo});
         console.log({message: 'Usuario atualizado com sucesso!', user: user})
-        res.status(200).json({message: 'Usuário atualizado com sucesso!', user: {name, username, email}});
+        res.status(200).json({message: 'Usuário atualizado com sucesso!', user: {username}});
     } catch (error) {
         console.log(error.message)
         if (error.message === 'Usuário não encontrado!') {

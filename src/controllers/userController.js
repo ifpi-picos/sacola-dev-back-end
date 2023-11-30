@@ -4,57 +4,15 @@ const {verifyIfUserExists} = require('../utils/verifications');
 // Funções auxiliares
 function removeGameFromOtherStatusList(user, game, status, location) {
     const userCopy = user;
-    if (location === 'steam') {
-        switch (status) {
-            case 'complete':
-                userCopy.gameStatus.steamGames.playingGames = userCopy.gameStatus.steamGames.playingGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.steamGames.abandonedGames = userCopy.gameStatus.steamGames.abandonedGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.steamGames.playingLaterGames = userCopy.gameStatus.steamGames.playingLaterGames.filter((gameItem) => gameItem !== game);
-                break;
-            case 'playingNow':
-                userCopy.gameStatus.steamGames.completeGames = userCopy.gameStatus.steamGames.completeGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.steamGames.abandonedGames = userCopy.gameStatus.steamGames.abandonedGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.steamGames.playingLaterGames = userCopy.gameStatus.steamGames.playingLaterGames.filter((gameItem) => gameItem !== game);
-                break;
-            case 'abandoned':
-                userCopy.gameStatus.steamGames.completeGames = userCopy.gameStatus.steamGames.completeGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.steamGames.playingGames = userCopy.gameStatus.steamGames.playingGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.steamGames.playingLaterGames = userCopy.gameStatus.steamGames.playingLaterGames.filter((gameItem) => gameItem !== game);
-                break;
-            case 'playingLater':
-                userCopy.gameStatus.steamGames.completeGames = userCopy.gameStatus.steamGames.completeGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.steamGames.playingGames = userCopy.gameStatus.steamGames.playingGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.steamGames.abandonedGames = userCopy.gameStatus.steamGames.abandonedGames.filter((gameItem) => gameItem !== game);
-                break;
-            default:
-                throw new Error('Status não informado!');
+    const gameStatus = userCopy.gameStatus[`${location}Games`];
+    const statusList = ['completeGames', 'playingGames', 'abandonedGames', 'playingLaterGames'];
+
+    statusList.forEach((statusItem) => {
+        if (statusItem !== `${status}Games`) {
+            gameStatus[statusItem] = gameStatus[statusItem].filter((gameItem) => gameItem !== game);
         }
-    } else if (location === 'local') {
-        switch (status) {
-            case 'complete':
-                userCopy.gameStatus.localGames.playingGames = userCopy.gameStatus.localGames.playingGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.localGames.abandonedGames = userCopy.gameStatus.localGames.abandonedGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.localGames.playingLaterGames = userCopy.gameStatus.localGames.playingLaterGames.filter((gameItem) => gameItem !== game);
-                break;
-            case 'playingNow':
-                userCopy.gameStatus.localGames.completeGames = userCopy.gameStatus.localGames.completeGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.localGames.abandonedGames = userCopy.gameStatus.localGames.abandonedGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.localGames.playingLaterGames = userCopy.gameStatus.localGames.playingLaterGames.filter((gameItem) => gameItem !== game);
-                break;
-            case 'abandoned':
-                userCopy.gameStatus.localGames.completeGames = userCopy.gameStatus.localGames.completeGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.localGames.playingGames = userCopy.gameStatus.localGames.playingGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.localGames.playingLaterGames = userCopy.gameStatus.localGames.playingLaterGames.filter((gameItem) => gameItem !== game);
-                break;
-            case 'playingLater':
-                userCopy.gameStatus.localGames.completeGames = userCopy.gameStatus.localGames.completeGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.localGames.playingGames = userCopy.gameStatus.localGames.playingGames.filter((gameItem) => gameItem !== game);
-                userCopy.gameStatus.localGames.abandonedGames = userCopy.gameStatus.localGames.abandonedGames.filter((gameItem) => gameItem !== game);
-                break;
-            default:
-                throw new Error('Status não informado!');
-        }
-    }
+    });
+
     return userCopy;
 }
 
@@ -106,9 +64,9 @@ const userController = {
     // Função para atualizar um usuário
     async updateUser(userDTO) {
 
-        if (!userDTO.name && !userDTO.username) throw new Error('Dados não informados!');
+        if (!userDTO.username && !userDTO.photo) throw new Error('Dados não informados!');
 
-        const {uid, name, username, email, photo} = userDTO;
+        const {uid, username, photo} = userDTO;
 
         try {
             if (!await verifyIfUserExists(uid)) {
@@ -116,10 +74,8 @@ const userController = {
             }
             const user = await UserModel.findById(uid);
             if (user) {
-                user.name = name;
-                user.username = username;
-                user.email = email;
-                user.photo = photo;
+                if (username) user.username = username;
+                if (photo) user.photo = photo;
                 await user.save();
                 return user;
             }
