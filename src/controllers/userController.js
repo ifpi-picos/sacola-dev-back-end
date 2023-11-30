@@ -425,7 +425,7 @@ const userController = {
 
             const user = await UserModel.findById(id);
             if (user) {
-                if (user.userGames.games.length === 0) {
+                if (user.userGames.games.LocalGameData.length === 0) {
                     throw new Error('Usuário não possui jogos!');
                 }
 
@@ -439,10 +439,10 @@ const userController = {
                 user.userGames.games.LocalGameData.game_List = user.userGames.games.LocalGameData.game_List.filter((gameItem) => gameItem !== game);
                 user.userGames.games.LocalGameData.game_count -= 1;
                 user.userGames.games_total -= 1;
-                user.gameStatus.completeGames = user.gameStatus.completeGames.filter((gameItem) => gameItem !== game);
-                user.gameStatus.playingGames = user.gameStatus.playingGames.filter((gameItem) => gameItem !== game);
-                user.gameStatus.abandonedGames = user.gameStatus.abandonedGames.filter((gameItem) => gameItem !== game);
-                user.gameStatus.playingLaterGames = user.gameStatus.playingLaterGames.filter((gameItem) => gameItem !== game);
+                user.gameStatus.localGames.completeGames = user.gameStatus.localGames.completeGames.filter((gameItem) => gameItem !== game);
+                user.gameStatus.localGames.playingGames = user.gameStatus.localGames.playingGames.filter((gameItem) => gameItem !== game);
+                user.gameStatus.localGames.abandonedGames = user.gameStatus.localGames.abandonedGames.filter((gameItem) => gameItem !== game);
+                user.gameStatus.localGames.playingLaterGames = user.gameStatus.localGames.playingLaterGames.filter((gameItem) => gameItem !== game);
 
                 await user.save();
                 return user;
