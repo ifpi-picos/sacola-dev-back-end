@@ -75,7 +75,9 @@ const steamController = {
                 const steamGames = [];
                 for (let i = 0; i < userGamesList.length; i++) {
                     const game = await GameModel.Game.findById(userGamesList[i]);
-                    steamGames.push(game);
+                    if (game !== null) {
+                        steamGames.push(game);
+                    }
                 }
                 return steamGames;
             }
