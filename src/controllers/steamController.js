@@ -132,6 +132,15 @@ const steamController = {
         }
     },
 
+    // Função para pegar o jogo steam do banco de dados
+    async getSteamGameFromDatabase(steamAppId) {
+        try {
+            return await GameModel.Game.findById(steamAppId);
+        } catch (error) {
+            throw new Error(error.message);
+        }
+    },
+
     //Função para pegar os jogos steam do usuário
     async getSteamGameInfo(steamGameId) {
         try {
