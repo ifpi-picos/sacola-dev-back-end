@@ -64,6 +64,7 @@ router.get('/user', verifyToken, async (req, res) => {
 router.put('/user', verifyToken, async (req, res) => {
     const uid = req.uid;
     const {username, photo} = req.body;
+    console.log(photo)
     try {
         const user = await userController.updateUser({uid, username, photo});
         console.log({message: 'Usuario atualizado com sucesso!', user: user})
