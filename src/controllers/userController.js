@@ -155,7 +155,6 @@ const userController = {
 
             let user = await UserModel.findById(id);
             if (user) {
-                console.log(location)
                 if (location === 'steam') {
                     const gameExistsInSteam = user.userGames.games.steam.game_List;
                     if (gameExistsInSteam.includes(game)) {
@@ -164,14 +163,14 @@ const userController = {
                                 if (user.gameStatus.steamGames.completeGames.includes(game)) {
                                     throw new Error('Jogo já está na lista!');
                                 }
-                                user = removeGameFromOtherStatusList(user, game, status);
+                                user = removeGameFromOtherStatusList(user, game, status, location);
                                 user.gameStatus.steamGames.completeGames.push(game);
                                 break;
                             case 'playingNow':
                                 if (user.gameStatus.steamGames.playingGames.includes(game)) {
                                     throw new Error('Jogo já está na lista!');
                                 }
-                                user = removeGameFromOtherStatusList(user, game, status);
+                                user = removeGameFromOtherStatusList(user, game, status, location);
                                 user.gameStatus.steamGames.playingGames.push(game);
                                 break;
 
@@ -179,7 +178,7 @@ const userController = {
                                 if (user.gameStatus.steamGames.abandonedGames.includes(game)) {
                                     throw new Error('Jogo já está na lista!');
                                 }
-                                user = removeGameFromOtherStatusList(user, game, status);
+                                user = removeGameFromOtherStatusList(user, game, status, location);
                                 user.gameStatus.steamGames.abandonedGames.push(game);
                                 break;
 
@@ -187,7 +186,7 @@ const userController = {
                                 if (user.gameStatus.steamGames.playingLaterGames.includes(game)) {
                                     throw new Error('Jogo já está na lista!');
                                 }
-                                user = removeGameFromOtherStatusList(user, game, status);
+                                user = removeGameFromOtherStatusList(user, game, status, location);
                                 user.gameStatus.steamGames.playingLaterGames.push(game);
                                 break;
 
@@ -208,14 +207,14 @@ const userController = {
                                 if (user.gameStatus.localGames.completeGames.includes(game)) {
                                     throw new Error('Jogo já está na lista!');
                                 }
-                                user = removeGameFromOtherStatusList(user, game, status);
+                                user = removeGameFromOtherStatusList(user, game, status, location);
                                 user.gameStatus.localGames.completeGames.push(game);
                                 break;
                             case 'playingNow':
                                 if (user.gameStatus.localGames.playingGames.includes(game)) {
                                     throw new Error('Jogo já está na lista!');
                                 }
-                                user = removeGameFromOtherStatusList(user, game, status);
+                                user = removeGameFromOtherStatusList(user, game, status, location);
                                 user.gameStatus.localGames.playingGames.push(game);
                                 break;
 
@@ -223,7 +222,7 @@ const userController = {
                                 if (user.gameStatus.localGames.abandonedGames.includes(game)) {
                                     throw new Error('Jogo já está na lista!');
                                 }
-                                user = removeGameFromOtherStatusList(user, game, status);
+                                user = removeGameFromOtherStatusList(user, game, status, location);
                                 user.gameStatus.localGames.abandonedGames.push(game);
                                 break;
 
@@ -231,7 +230,7 @@ const userController = {
                                 if (user.gameStatus.localGames.playingLaterGames.includes(game)) {
                                     throw new Error('Jogo já está na lista!');
                                 }
-                                user = removeGameFromOtherStatusList(user, game, status);
+                                user = removeGameFromOtherStatusList(user, game, status, location);
                                 user.gameStatus.localGames.playingLaterGames.push(game);
                                 break;
 
