@@ -107,10 +107,11 @@ const steamController = {
     //Função para adicionar os jogo steam no banco de dados
     async addSteamGamesToDatabase(games) {
         try {
+            const maxMilliseconds = 60000;
             const steamGames = games.response.games;
             console.log(steamGames.length);
             for (let i = 0; i < steamGames.length; i++) {
-                if (await GameModel.Game.findById(steamGames[i].appid)) {
+                if (await GameModel.Game.findById(steamGames[i].appid).maxTimeMS(maxMilliseconds)) {
                     continue;
                 }
                 const gameDetails = await getSteamGameById(steamGames[i].appid);

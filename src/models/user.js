@@ -77,7 +77,11 @@ const userSchema = new Schema({
             abandonedGames: [],
             playingLaterGames: [],
         }
-    }
+    },
+    level: {
+        type: Number,
+        default: 0,
+    },
 }, {timestamps: true});
 
 const User = mongoose.model('User', userSchema);

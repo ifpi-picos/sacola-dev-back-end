@@ -3,6 +3,7 @@ const steam = require('../services/steamApi/steam');
 const userController = require('../controllers/userController');
 const steamController = require('../controllers/steamController');
 const verifyToken = require('../middlewares/verifyToken');
+const {fork} = require('child_process');
 
 
 // Create a new user
@@ -287,7 +288,11 @@ router.put('/user/steam/games', verifyToken, async (req, res) => {
 
         const user = await steamController.addSteamGamesToUser(uid, userGames);
 
-        await steamController.addSteamGamesToDatabase(userGames);
+        const child = fork('./src/utils/steamGameToDb.js');
+        child.send(userGames);
+        child.on('exit', () => {
+            console.log('Child process finished');
+        });
 
         console.log({message: 'Jogos adicionados com sucesso!', user: user})
         res.status(200).json({message: 'Jogos adicionados com sucesso!'});
